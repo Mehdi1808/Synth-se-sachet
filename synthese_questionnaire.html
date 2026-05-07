@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synthèse — Questionnaire Format Sachet</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --sand: #F5EFE2;
+    --clay: #C4865A;
+    --forest: #3B5A43;
+    --moss: #6B8C6E;
+    --bark: #2E2118;
+    --cream: #FDFAF4;
+    --warm-gray: #8E8478;
+    --accent: #D4622A;
+    --light-green: #EAF0EB;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--cream);
+    color: var(--bark);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--forest);
+    color: var(--cream);
+    padding: 64px 48px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: rgba(196,134,90,.18);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 30%;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(107,140,110,.22);
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 2px;
+    padding: 4px 12px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: #d4e8d6;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 6vw, 68px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: #C4D8A0;
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,.65);
+    max-width: 480px;
+    line-height: 1.6;
+    margin-top: 4px;
+  }
+
+  /* ── KPI STRIP ── */
+  .kpi-strip {
+    background: var(--clay);
+    display: flex;
+    gap: 0;
+  }
+  .kpi {
+    flex: 1;
+    padding: 28px 24px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,.2);
+    color: #fff;
+    position: relative;
+  }
+  .kpi:last-child { border-right: none; }
+  .kpi-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 700;
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .kpi-label {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.75);
+  }
+
+  /* ── MAIN GRID ── */
+  .main { max-width: 1040px; margin: 0 auto; padding: 56px 24px 80px; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .grid-full { margin-bottom: 24px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: #fff;
+    border-radius: 4px;
+    padding: 28px 28px 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 6px 20px rgba(0,0,0,.04);
+    position: relative;
+  }
+  .card-title {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .card-accent {
+    display: block;
+    width: 30px;
+    height: 3px;
+    background: var(--clay);
+    margin-bottom: 10px;
+    border-radius: 2px;
+  }
+
+  /* Interest card */
+  .interest-card { background: var(--forest); color: #fff; }
+  .interest-card .card-title { color: rgba(255,255,255,.6); }
+  .interest-big {
+    font-family: 'Playfair Display', serif;
+    font-size: 96px;
+    font-weight: 900;
+    line-height: 1;
+    color: #C4D8A0;
+    display: block;
+  }
+  .interest-label { font-size: 15px; color: rgba(255,255,255,.75); margin-top: 8px; }
+  .interest-sub { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 6px; }
+
+  /* Bar rows */
+  .bar-row { margin-bottom: 14px; }
+  .bar-row:last-child { margin-bottom: 0; }
+  .bar-meta { display: flex; justify-content: space-between; margin-bottom: 6px; align-items: baseline; }
+  .bar-name { font-size: 13px; color: var(--bark); }
+  .bar-val { font-size: 13px; font-weight: 500; color: var(--forest); }
+  .bar-track { height: 8px; background: #F0EADE; border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width .6s ease; }
+  .fill-clay { background: var(--clay); }
+  .fill-forest { background: var(--forest); }
+  .fill-moss { background: var(--moss); }
+  .fill-accent { background: var(--accent); }
+
+  /* Donut placeholder */
+  .chart-wrap { position: relative; height: 200px; display: flex; align-items: center; justify-content: center; }
+  .chart-wrap canvas { max-height: 200px; }
+
+  /* Tag cloud for avantages */
+  .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .tag {
+    background: var(--light-green);
+    color: var(--forest);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .tag.big { font-size: 14px; padding: 8px 18px; }
+  .tag.medium { font-size: 13px; padding: 7px 16px; }
+
+  /* Quote strip */
+  .quotes-strip {
+    background: var(--sand);
+    border-left: 4px solid var(--clay);
+    padding: 20px 24px;
+    border-radius: 0 4px 4px 0;
+  }
+  .quotes-strip p { font-size: 13px; color: var(--bark); line-height: 1.7; margin-bottom: 10px; }
+  .quotes-strip p:last-child { margin-bottom: 0; }
+  .quotes-strip p::before { content: '"'; color: var(--clay); font-size: 18px; }
+
+  /* Conclusion */
+  .conclusion {
+    background: var(--forest);
+    border-radius: 4px;
+    padding: 40px 40px 36px;
+    color: #fff;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 32px;
+  }
+  .conclusion h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 14px;
+    grid-column: 1 / -1;
+  }
+  .conclusion-item { }
+  .conclusion-item h3 { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #C4D8A0; margin-bottom: 8px; }
+  .conclusion-item p { font-size: 13.5px; color: rgba(255,255,255,.75); line-height: 1.65; }
+
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--warm-gray);
+    margin-top: 56px;
+    letter-spacing: 1px;
+  }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .grid-2, .grid-3, .conclusion { grid-template-columns: 1fr; }
+    .kpi-strip { flex-wrap: wrap; }
+    .kpi { flex: 1 1 50%; }
+    .hero { padding: 40px 20px; }
+    .main { padding: 32px 16px 56px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Étude consommateur · Mai 2026</div>
+    <h1>Format <em>Sachet</em><br>— Synthèse</h1>
+    <p class="hero-sub">Analyse des réponses au questionnaire de validation du format sachet lyophilisé/déshydraté.</p>
+  </div>
+</div>
+
+<!-- KPI STRIP -->
+<div class="kpi-strip">
+  <div class="kpi">
+    <span class="kpi-number">35</span>
+    <span class="kpi-label">Répondants</span>
+  </div>
+  <div class="kpi">
+    <span class="kpi-number">94%</span>
+    <span class="kpi-label">Intérêt positif</span>
+  </div>
+  <div class="kpi">
+    <span class="kpi-number">12</span>
+    <span class="kpi-label">Questions</span>
+  </div>
+  <div class="kpi">
+    <span class="kpi-number">74%</span>
+    <span class="kpi-label">Temps idéal : 2–5 min</span>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- ROW 1 : INTEREST + USAGE -->
+  <div class="section-title">01 — Intérêt & situations d'usage</div>
+  <div class="grid-2" style="align-items:start">
+
+    <!-- Interest -->
+    <div class="card interest-card">
+      <span class="card-accent" style="background:#C4D8A0"></span>
+      <div class="card-title">Intérêt pour le format</div>
+      <span class="interest-big">94%</span>
+      <p class="interest-label">des répondants sont intéressés</p>
+      <p class="interest-sub">33 Oui · 2 Non · 35 total</p>
+    </div>
+
+    <!-- Usage situations -->
+    <div class="card">
+      <span class="card-accent"></span>
+      <div class="card-title">Situations d'utilisation</div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">🏔 Sport / randonnée</span><span class="bar-val">13</span></div>
+        <div class="bar-track"><div class="bar-fill fill-forest" style="width:100%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">💼 Travail / déplacement</span><span class="bar-val">11</span></div>
+        <div class="bar-track"><div class="bar-fill fill-clay" style="width:85%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">⚡ Repas rapide</span><span class="bar-val">9</span></div>
+        <div class="bar-track"><div class="bar-fill fill-moss" style="width:69%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">📦 Stock de secours</span><span class="bar-val">2</span></div>
+        <div class="bar-track"><div class="bar-fill fill-accent" style="width:15%"></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 2 : CRITÈRES + TEMPS + PORTIONS -->
+  <div class="section-title">02 — Critères, temps & portions</div>
+  <div class="grid-3">
+
+    <!-- Top 3 critères -->
+    <div class="card" style="grid-column: span 2">
+      <span class="card-accent"></span>
+      <div class="card-title">Critères prioritaires <span style="color:#bbb;font-weight:300">(choix multiples)</span></div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">🌟 Goût</span><span class="bar-val">33</span></div>
+        <div class="bar-track"><div class="bar-fill fill-clay" style="width:100%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">⚙️ Facilité de préparation</span><span class="bar-val">23</span></div>
+        <div class="bar-track"><div class="bar-fill fill-forest" style="width:70%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">🌿 Qualité des ingrédients</span><span class="bar-val">22</span></div>
+        <div class="bar-track"><div class="bar-fill fill-moss" style="width:67%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">💪 Apport nutritionnel</span><span class="bar-val">13</span></div>
+        <div class="bar-track"><div class="bar-fill fill-clay" style="width:39%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">⏱ Rapidité de cuisson</span><span class="bar-val">8</span></div>
+        <div class="bar-track"><div class="bar-fill fill-accent" style="width:24%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">💶 Prix</span><span class="bar-val">1</span></div>
+        <div class="bar-track"><div class="bar-fill fill-forest" style="width:3%"></div></div>
+      </div>
+    </div>
+
+    <!-- Temps préparation -->
+    <div class="card">
+      <span class="card-accent"></span>
+      <div class="card-title">Temps de préparation</div>
+      <div class="chart-wrap">
+        <canvas id="chartTemps"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Portions + Recettes -->
+  <div class="grid-2" style="margin-bottom:24px">
+    <div class="card">
+      <span class="card-accent"></span>
+      <div class="card-title">Portion préférée</div>
+      <div class="chart-wrap">
+        <canvas id="chartPortion"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <span class="card-accent"></span>
+      <div class="card-title">Type de recettes</div>
+      <div class="chart-wrap">
+        <canvas id="chartRecettes"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3 : CONSOMMATION + FREINS -->
+  <div class="section-title">03 — Mode de consommation & freins</div>
+  <div class="grid-2">
+
+    <!-- Mode de consommation -->
+    <div class="card">
+      <span class="card-accent"></span>
+      <div class="card-title">Comment consommer le produit ?</div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">💧 Eau dans le sachet</span><span class="bar-val">28</span></div>
+        <div class="bar-track"><div class="bar-fill fill-forest" style="width:100%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">🧊 Avec eau froide</span><span class="bar-val">19</span></div>
+        <div class="bar-track"><div class="bar-fill fill-moss" style="width:68%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">♨️ Avec eau chaude</span><span class="bar-val">15</span></div>
+        <div class="bar-track"><div class="bar-fill fill-clay" style="width:54%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">🫕 Casserole d'eau</span><span class="bar-val">3</span></div>
+        <div class="bar-track"><div class="bar-fill fill-accent" style="width:11%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">🤷 Peu importe</span><span class="bar-val">1</span></div>
+        <div class="bar-track"><div class="bar-fill fill-clay" style="width:4%"></div></div>
+      </div>
+    </div>
+
+    <!-- Freins -->
+    <div class="card">
+      <span class="card-accent" style="background:var(--accent)"></span>
+      <div class="card-title">Freins principaux</div>
+      <div class="chart-wrap">
+        <canvas id="chartFreins"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 4 : FORMAT + PACKAGING -->
+  <div class="section-title">04 — Formats & packaging</div>
+  <div class="grid-2">
+
+    <div class="card">
+      <span class="card-accent"></span>
+      <div class="card-title">Format d'achat préféré</div>
+      <div class="chart-wrap">
+        <canvas id="chartFormat"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-accent"></span>
+      <div class="card-title">Packaging préféré</div>
+      <div class="chart-wrap">
+        <canvas id="chartPackaging"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 5 : VERBATIMS -->
+  <div class="section-title">05 — Avantages attendus</div>
+  <div class="grid-2">
+
+    <div class="card">
+      <span class="card-accent" style="background:var(--moss)"></span>
+      <div class="card-title">Thèmes récurrents</div>
+      <div class="tag-cloud">
+        <span class="tag big">Praticité</span>
+        <span class="tag big">Transport</span>
+        <span class="tag big">Rapidité</span>
+        <span class="tag medium">Légèreté</span>
+        <span class="tag medium">Manger partout</span>
+        <span class="tag">Gain de place</span>
+        <span class="tag">Conservation</span>
+        <span class="tag">Nutrition sportive</span>
+        <span class="tag">Pas de micro-ondes</span>
+        <span class="tag">Prix accessible</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="quotes-strip">
+        <p>Pouvoir manger partout sans que ça prenne trop de place.</p>
+        <p>Nutrition adaptée pour les randonnées. Poids léger du sachet.</p>
+        <p>Rapide et pratique — simple à préparer tout en étant bon.</p>
+        <p>Léger, utilisation simple.</p>
+        <p>Sois meilleure que Décathlon ! Avec des apports nutritionnels intéressants.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CONCLUSION -->
+  <div class="conclusion">
+    <h2>Points clés à retenir</h2>
+    <div class="conclusion-item">
+      <h3>✅ Signal fort</h3>
+      <p>94 % d'intérêt net. Le format sachet répond à un besoin réel, principalement en contexte sportif (randonnée) et en mobilité professionnelle.</p>
+    </div>
+    <div class="conclusion-item">
+      <h3>🎯 Priorité produit</h3>
+      <p>Le goût est cité par 100 % des intéressés comme critère n°1, devant la facilité de préparation et la qualité des ingrédients.</p>
+    </div>
+    <div class="conclusion-item">
+      <h3>⚠️ Points de vigilance</h3>
+      <p>Le goût perçu moins bon (34 %) et la complexité d'utilisation (31 %) sont les deux freins dominants à lever en priorité.</p>
+    </div>
+    <div class="conclusion-item">
+      <h3>📦 Format & packaging</h3>
+      <p>Préférence nette pour le sachet plastique recyclable (74 %) et les packs avec remise (57 %). La voie à explorer : un pack découverte multi-saveurs.</p>
+    </div>
+  </div>
+
+  <div class="footer">Questionnaire Format Sachet · 35 répondants · Mai 2026</div>
+
+</div>
+
+<script>
+const CLAY    = '#C4865A';
+const FOREST  = '#3B5A43';
+const MOSS    = '#6B8C6E';
+const SAND    = '#D4A86A';
+const ACCENT  = '#D4622A';
+const LIGHT   = '#EAF0EB';
+
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.color = '#5A5048';
+
+// ── Temps de préparation ──
+new Chart(document.getElementById('chartTemps'), {
+  type: 'doughnut',
+  data: {
+    labels: ['2 à 5 min', '+ de 5 min', '- de 2 min'],
+    datasets: [{ data: [26, 6, 3], backgroundColor: [FOREST, CLAY, MOSS], borderWidth: 0, hoverOffset: 4 }]
+  },
+  options: {
+    cutout: '68%',
+    plugins: {
+      legend: { position: 'right', labels: { boxWidth: 12, padding: 12, font: { size: 12 } } },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} réponses` } }
+    }
+  }
+});
+
+// ── Portion ──
+new Chart(document.getElementById('chartPortion'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Les deux', 'Repas complet', 'Snack'],
+    datasets: [{ data: [15, 15, 5], backgroundColor: [FOREST, CLAY, MOSS], borderWidth: 0, hoverOffset: 4 }]
+  },
+  options: {
+    cutout: '68%',
+    plugins: {
+      legend: { position: 'right', labels: { boxWidth: 12, padding: 12, font: { size: 12 } } }
+    }
+  }
+});
+
+// ── Recettes ──
+new Chart(document.getElementById('chartRecettes'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Salé + Sportif', 'Salé', 'Gamme sportive'],
+    datasets: [{ data: [20, 8, 7], backgroundColor: [FOREST, CLAY, MOSS], borderWidth: 0, hoverOffset: 4 }]
+  },
+  options: {
+    cutout: '68%',
+    plugins: {
+      legend: { position: 'right', labels: { boxWidth: 12, padding: 12, font: { size: 12 } } }
+    }
+  }
+});
+
+// ── Freins ──
+new Chart(document.getElementById('chartFreins'), {
+  type: 'bar',
+  data: {
+    labels: ['Goût perçu\nmoins bon', "Complexité\nd'utilisation", 'Mauvaise\ncuisson', 'Packaging peu\nécologique'],
+    datasets: [{
+      data: [12, 11, 9, 3],
+      backgroundColor: [ACCENT, CLAY, MOSS, FOREST],
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} réponses` } } },
+    scales: {
+      x: { grid: { color: '#f0ece5' }, ticks: { stepSize: 3 } },
+      y: { grid: { display: false }, ticks: { font: { size: 12 } } }
+    }
+  }
+});
+
+// ── Format d'achat ──
+new Chart(document.getElementById('chartFormat'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Pack avec remise', 'Unité', 'Peu importe'],
+    datasets: [{ data: [23, 18, 1], backgroundColor: [FOREST, CLAY, MOSS], borderWidth: 0, hoverOffset: 4 }]
+  },
+  options: {
+    cutout: '68%',
+    plugins: {
+      legend: { position: 'right', labels: { boxWidth: 12, padding: 12, font: { size: 12 } } }
+    }
+  }
+});
+
+// ── Packaging ──
+new Chart(document.getElementById('chartPackaging'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Sachet plastique recyclable', 'Bocal en verre'],
+    datasets: [{ data: [26, 8], backgroundColor: [FOREST, CLAY], borderWidth: 0, hoverOffset: 4 }]
+  },
+  options: {
+    cutout: '68%',
+    plugins: {
+      legend: { position: 'right', labels: { boxWidth: 12, padding: 12, font: { size: 12 } } }
+    }
+  }
+});
+</script>
+</body>
+</html>
